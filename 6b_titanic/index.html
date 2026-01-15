@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1)
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+            font-size: 14px
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            display: none
+        }
+
+        .survived {
+            background: #e8f5e9
+        }
+
+        .not-survived {
+            background: #ffebee
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Titanic Survival Prediction</h1>
+        <form id="form">
+            <label>Class</label><select id="pclass">
+                <option value="1">1st</option>
+                <option value="2">2nd</option>
+                <option value="3" selected>3rd</option>
+            </select>
+            <label>Gender</label><select id="sex">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <label>Age</label><input type="number" id="age" required>
+            <label>Fare (£)</label><input type="number" id="fare" step="0.01" required>
+            <label>Siblings/Spouses</label><input type="number" id="sibsp" value="0">
+            <label>Parents/Children</label><input type="number" id="parch" value="0">
+            <label>Embarked</label><select id="embarked">
+                <option value="S">Southampton</option>
+                <option value="C">Cherbourg</option>
+                <option value="Q">Queenstown</option>
+            </select>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result">
+            <h2 id="msg"></h2>
+            <p id="prob"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('form').onsubmit = async (e) => {
+            e.preventDefault();
+            let data = { pclass: +document.getElementById('pclass').value, sex: document.getElementById('sex').value, age: +document.getElementById('age').value, sibsp: +document.getElementById('sibsp').value, parch: +document.getElementById('parch').value, fare: +document.getElementById('fare').value, embarked: document.getElementById('embarked').value };
+            let r = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            let d = await r.json();
+            let res = document.getElementById('result');
+            res.style.display = 'block';
+            res.className = d.survived ? 'survived' : 'not-survived';
+            document.getElementById('msg').textContent = d.message;
+            document.getElementById('prob').textContent = 'Probability: ' + d.probability_percent;
+        };
+    </script>
+</body>
+
+</html>

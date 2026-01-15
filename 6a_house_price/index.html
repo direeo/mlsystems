@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1)
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px
+        }
+
+        button:hover {
+            background: #555
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            text-align: center;
+            display: none
+        }
+
+        #result h2 {
+            color: #333;
+            margin: 0
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>House Price Prediction</h1>
+        <form id="form">
+            <div class="form-row">
+                <div><label>Median Income</label><input type="number" id="f0" step="any" required></div>
+                <div><label>House Age</label><input type="number" id="f1" step="any" required></div>
+            </div>
+            <div class="form-row">
+                <div><label>Avg Rooms</label><input type="number" id="f2" step="any" required></div>
+                <div><label>Avg Bedrooms</label><input type="number" id="f3" step="any" required></div>
+            </div>
+            <div class="form-row">
+                <div><label>Population</label><input type="number" id="f4" step="any" required></div>
+                <div><label>Avg Occupancy</label><input type="number" id="f5" step="any" required></div>
+            </div>
+            <div class="form-row">
+                <div><label>Latitude</label><input type="number" id="f6" step="any" required></div>
+                <div><label>Longitude</label><input type="number" id="f7" step="any" required></div>
+            </div>
+            <button type="submit">Predict Price</button>
+        </form>
+        <div id="result">
+            <h2 id="price"></h2>
+        </div>
+    </div>
+    <script>
+        document.getElementById('form').onsubmit = async (e) => {
+            e.preventDefault();
+            let f = []; for (let i = 0; i < 8; i++)f.push(parseFloat(document.getElementById('f' + i).value));
+            let r = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ features: f }) });
+            let d = await r.json();
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('price').textContent = d.success ? d.formatted_price : 'Error: ' + d.error;
+        };
+    </script>
+</body>
+
+</html>

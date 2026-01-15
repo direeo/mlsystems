@@ -1,0 +1,14 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore pickle files (except model.h5)
+scaler.pkl
+encoders.pkl
+
+# Ignore JSON data files
+*.json
+
+# IDE
+.vscode/
+.idea/
