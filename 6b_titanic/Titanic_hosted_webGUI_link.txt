@@ -2,5 +2,5 @@ Name: Temidire Ojo
 Matric Number: 22CG031908
 Machine Learning Algorithm Used: Logistic Regression
 Model Persistence Method: Pickle
-Live URL: [TO BE UPDATED AFTER DEPLOYMENT]
+Live URL: https://titanic-survival-laq9.onrender.com
 GitHub Repository: https://github.com/direeo/mlsystems
