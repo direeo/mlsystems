@@ -1,4 +1,4 @@
-Name: Temidire Ojo
+Name: Esther Ojo
 Matric Number: 22CG031908
 Machine Learning Algorithm Used: Linear Regression
 Model Persistence Method: Pickle
