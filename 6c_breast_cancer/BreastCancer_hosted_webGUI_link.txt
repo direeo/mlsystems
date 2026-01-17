@@ -1,0 +1,6 @@
+Name: Temidire Ojo
+Matric Number: 22CG031908
+Machine Learning Algorithm Used: Support Vector Machine (SVM)
+Model Persistence Method: Pickle
+Live URL: [TO BE UPDATED AFTER DEPLOYMENT]
+GitHub Repository: https://github.com/direeo/mlsystems

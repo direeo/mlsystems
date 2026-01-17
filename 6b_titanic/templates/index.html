@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Titanic Survival Prediction</h1>
+        <p class="subtitle">Enter passenger details to predict survival</p>
+        <form id="form">
+            <div class="form-group">
+                <label>Passenger Class</label>
+                <select id="pclass">
+                    <option value="1">1st Class</option>
+                    <option value="2">2nd Class</option>
+                    <option value="3" selected>3rd Class</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Sex</label>
+                <select id="sex">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Age</label>
+                <input type="number" id="age" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+                <label>Siblings/Spouses Aboard</label>
+                <input type="number" id="sibsp" min="0" value="0" required>
+            </div>
+            <div class="form-group">
+                <label>Fare (£)</label>
+                <input type="number" id="fare" step="0.01" required>
+            </div>
+            <button type="submit">Predict Survival</button>
+        </form>
+        <div id="result">
+            <h2 id="msg"></h2>
+            <p id="prob"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('form').onsubmit = async (e) => {
+            e.preventDefault();
+            let data = {
+                pclass: +document.getElementById('pclass').value,
+                sex: document.getElementById('sex').value,
+                age: +document.getElementById('age').value,
+                sibsp: +document.getElementById('sibsp').value,
+                fare: +document.getElementById('fare').value
+            };
+            let r = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            let d = await r.json();
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').className = d.survived ? 'survived' : 'not-survived';
+            document.getElementById('msg').textContent = d.message;
+            document.getElementById('prob').textContent = 'Probability: ' + d.probability;
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>House Price Prediction</h1>
+        <p class="subtitle">Enter house features to predict the sale price</p>
+        <form id="form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Overall Quality (1-10)</label>
+                    <input type="number" id="f0" min="1" max="10" required>
+                </div>
+                <div class="form-group">
+                    <label>Living Area (sq ft)</label>
+                    <input type="number" id="f1" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Basement Area (sq ft)</label>
+                    <input type="number" id="f2" required>
+                </div>
+                <div class="form-group">
+                    <label>Garage Cars (0-4)</label>
+                    <input type="number" id="f3" min="0" max="4" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Bedrooms Above Ground</label>
+                    <input type="number" id="f4" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Year Built</label>
+                    <input type="number" id="f5" min="1900" max="2025" required>
+                </div>
+            </div>
+            <button type="submit">Predict Price</button>
+        </form>
+        <div id="result">
+            <h2 id="price"></h2>
+        </div>
+    </div>
+    <script>
+        document.getElementById('form').onsubmit = async (e) => {
+            e.preventDefault();
+            let f = [];
+            for (let i = 0; i < 6; i++) f.push(parseFloat(document.getElementById('f' + i).value));
+            let r = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ features: f })
+            });
+            let d = await r.json();
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('price').textContent = d.success ? d.formatted_price : 'Error: ' + d.error;
+        };
+    </script>
+</body>
+
+</html>

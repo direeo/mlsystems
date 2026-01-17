@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breast Cancer Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Breast Cancer Prediction</h1>
+        <p class="subtitle">Enter tumor measurements to predict diagnosis</p>
+        <p class="disclaimer">⚠️ Educational purposes only - Not for medical diagnosis</p>
+        <form id="form">
+            <div class="form-group">
+                <label>Radius Mean</label>
+                <input type="number" id="f0" step="any" placeholder="e.g., 14.5" required>
+            </div>
+            <div class="form-group">
+                <label>Texture Mean</label>
+                <input type="number" id="f1" step="any" placeholder="e.g., 19.0" required>
+            </div>
+            <div class="form-group">
+                <label>Perimeter Mean</label>
+                <input type="number" id="f2" step="any" placeholder="e.g., 90.0" required>
+            </div>
+            <div class="form-group">
+                <label>Area Mean</label>
+                <input type="number" id="f3" step="any" placeholder="e.g., 600" required>
+            </div>
+            <div class="form-group">
+                <label>Smoothness Mean</label>
+                <input type="number" id="f4" step="any" placeholder="e.g., 0.10" required>
+            </div>
+            <button type="submit">Predict Diagnosis</button>
+        </form>
+        <div id="result">
+            <h2 id="diagnosis"></h2>
+            <p id="conf"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('form').onsubmit = async (e) => {
+            e.preventDefault();
+            let f = [];
+            for (let i = 0; i < 5; i++) f.push(parseFloat(document.getElementById('f' + i).value));
+            let r = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ features: f }) });
+            let d = await r.json();
+            let res = document.getElementById('result');
+            res.style.display = 'block';
+            res.className = d.is_malignant ? 'malignant' : 'benign';
+            document.getElementById('diagnosis').textContent = d.prediction;
+            document.getElementById('conf').textContent = 'Confidence: ' + d.confidence;
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Cultivar Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Wine Cultivar Prediction</h1>
+        <p class="subtitle">Enter wine chemical properties to predict cultivar origin</p>
+        <form id="form">
+            <div class="form-group">
+                <label>Alcohol</label>
+                <input type="number" id="f0" step="any" placeholder="e.g., 13.5" required>
+            </div>
+            <div class="form-group">
+                <label>Malic Acid</label>
+                <input type="number" id="f1" step="any" placeholder="e.g., 2.0" required>
+            </div>
+            <div class="form-group">
+                <label>Ash</label>
+                <input type="number" id="f2" step="any" placeholder="e.g., 2.3" required>
+            </div>
+            <div class="form-group">
+                <label>Magnesium</label>
+                <input type="number" id="f3" step="any" placeholder="e.g., 100" required>
+            </div>
+            <div class="form-group">
+                <label>Flavanoids</label>
+                <input type="number" id="f4" step="any" placeholder="e.g., 2.0" required>
+            </div>
+            <div class="form-group">
+                <label>Color Intensity</label>
+                <input type="number" id="f5" step="any" placeholder="e.g., 5.0" required>
+            </div>
+            <button type="submit">Predict Origin</button>
+        </form>
+        <div id="result">
+            <h2 id="cultivar"></h2>
+            <p id="conf"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('form').onsubmit = async (e) => {
+            e.preventDefault();
+            let f = [];
+            for (let i = 0; i < 6; i++) f.push(parseFloat(document.getElementById('f' + i).value));
+            let r = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ features: f }) });
+            let d = await r.json();
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('cultivar').textContent = d.cultivar;
+            document.getElementById('conf').textContent = 'Confidence: ' + d.confidence;
+        };
+    </script>
+</body>
+
+</html>
